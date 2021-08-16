@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../data/data.dart';
 
 class MealDetailsScreen extends StatelessWidget {
@@ -14,10 +15,10 @@ class MealDetailsScreen extends StatelessWidget {
         MEALS.firstWhere((meal) => meal.id == routeArguments['id']);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('${selectedMeal.title}'),
-        ),
-        // Wichtig, damit die ganze Page Scrollbar wird
+        // Statt Text("Meal") => Text(selectedMeal.title)
+        appBar: AppBar(title: Text('${selectedMeal.title}')),
+        // body: SingleChildScrollView WICHTIG FÜR DIE SPÄTERE AUFGABE, DA SONST
+        // DER TEXT OUT OF BOUNDS GEHT
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -28,47 +29,88 @@ class MealDetailsScreen extends StatelessWidget {
                   child:
                       Image.network(selectedMeal.imageUrl, fit: BoxFit.cover)),
               // Theme Title Style nutzen (Definiert in der Main)
-              Text(
-                'Zutaten',
-                style: Theme.of(context).textTheme.headline6,
-              ),
               Container(
+                // Bisschen Spacing zwischen dem Bild und dem Text
+                // symmertric(vertical: x) nur oben und unten!
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  'Zutaten',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+              // Hier kann nicht einfach eine ListView() angewendet werden
+              // ListView nimmt "unendlich" höhe und darüber nimmt auch Column unendlich höhe
+              // ==> Deswegen muss ein Container dazwischengeschalten werden
+              // Media Query kann angewendet werden, um hier die höhen dynamisch anzupassen!
+              // Jedoch frisst das viel Zeit !
+              Container(
+                // Da die ListView unten bei zu vielen Elementen scrollbar wird
+                // ==> decorations einfügen um dies deutlich zu zeigen
+                // Borders in alle Richtungen
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10)),
+                // Margin und Padding um die "Textbox"
+                margin: EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
                 height: 200,
                 width: 400,
                 child: ListView.builder(
-                  itemCount: selectedMeal.ingredients.length,
-                  itemBuilder: (context, index) => Card(
-                    color: Theme.of(context).primaryColorDark,
-                    // Padding um den Text selbst
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: Text(selectedMeal.ingredients[index]),
-                    ),
-                  ),
+                    itemCount: selectedMeal.ingredients.length,
+                    itemBuilder: (context, index) => Card(
+                          color: Theme.of(context).accentColor,
+                          // Padding um den Text selbst
+                          child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              child: Text(selectedMeal.ingredients[index])),
+                        )),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  'Schritte',
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
-              Text(
-                'Schritte',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              // CONTAINER MIT DEFINIERTER HÖHE UND BREITE MÜSSEN HIER ANGEGEBEN WERDEN
-              // DA LIST VIEW SICH AN DIESE ANPASST [OHNE GIBTS FEHLER]
+              // Hier kann nicht einfach eine ListView() angewendet werden
+              // ListView nimmt "unendlich" höhe und darüber nimmt auch Column unendlich höhe
+              // ==> Deswegen muss ein Container dazwischengeschalten werden
+              // Media Query kann angewendet werden, um hier die höhen dynamisch anzupassen!
+              // Jedoch frisst das viel Zeit !
               Container(
+                // Da die ListView unten bei zu vielen Elementen scrollbar wird
+                // ==> decorations einfügen um dies deutlich zu zeigen
+                // Borders in alle Richtungen
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10)),
+                // Margin und Padding um die "Textbox"
+                margin: EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
                 height: 200,
                 width: 400,
                 child: ListView.builder(
-                  itemCount: selectedMeal.steps.length,
-                  itemBuilder: (context, index) => Card(
-                    color: Theme.of(context).primaryColorDark,
-                    // Padding um den Text selbst
-                    child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        child: Text(selectedMeal.steps[index])),
-                  ),
-                ),
-              ),
+                    itemCount: selectedMeal.steps.length,
+                    itemBuilder: (context, index) => Card(
+                          // Padding um den Text selbst
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
+                            // ListTile um das Layout hinzubekommen
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                child: Text('# ${(index + 1)}'),
+                              ),
+                              title: Text(
+                                selectedMeal.steps[index],
+                              ),
+                            ),
+                          ),
+                        )),
+              )
             ],
           ),
         ));
