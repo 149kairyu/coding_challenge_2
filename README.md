@@ -1,6 +1,10 @@
 # coding_challenge_2
 
-A new Flutter project.
+##Aufgabe
+
+* Erweitere den MealDetails Screen, sodass er das Bild, die Zutaten und die Schritte anzeigt (ein Stern, main Branch)
+* Formatiere die Zutaten und die Schritte (zwei Sterne, Branch `zwei-sterne`)
+* Formatiere die Zutaten und Schritte erneut, sodass sie ein unterschiedliches Format ausweisen (drei Sterne, Branch `drei-sterne`)
 
 ## Getting Started
 
